@@ -3,6 +3,7 @@
 #include <vector>
 #include "ExtraTypes.h"
 #include "ExtraEvents.h"
+#include "rva/RVA.h"
 
 namespace DialogueEx
 {
@@ -113,3 +114,9 @@ namespace {
         static void Register();
     };
 }
+
+// vr input
+
+
+extern RVA<_DialogueMenu__ShouldHandleEvent>          DialogueMenu__ShouldHandleEvent;
+bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent * inputEvent);

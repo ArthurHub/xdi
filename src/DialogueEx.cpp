@@ -22,33 +22,55 @@ namespace DialogueEx {
     // Addresses [23]
     //--------------------
 
+    // vr BGSSceneActionPlayerDialogue::GetCurrentTopicInfo(BGSScene *,TESObjectREFR *,SCENE_ACTION_PLAYER_RESPONSE_TYPE)
     RVA <uintptr_t> GetInfoForPlayerDialogueOption_HookTarget                   ({{RUNTIME_VERSION_1_10_75, 0x002C5241}}, "4C 8B C3 41 B9 ? ? ? ? 49 8B D5", 0xF);
     RVA <uintptr_t> GetInfoForNPCDialogueOption_HookTarget                      ({{RUNTIME_VERSION_1_10_75, 0x002C55D7}}, "4C 8B 05 ? ? ? ? 41 B9 ? ? ? ? 49 8B D5", 0x13);
+    // vr BGSSceneActionNPCResponseDialogue::GetCurrentTopicInfo(BGSScene *)
     RVA <uintptr_t> GetNPCResponseInfoForOption_HookTarget                      ({{RUNTIME_VERSION_1_10_75, 0x002C3408}}, "49 8B D5 49 8B CF E8 ? ? ? ? 48 85 C0", 0x6);
+    // vr call    qword ptr [rax+270h]
     RVA <uintptr_t> IsPlayerTalking_Call                                        ({{RUNTIME_VERSION_1_10_75, 0x00D91383}}, "FF 90 70 02 00 00 84 C0 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 80 78 4E 00");
+    // vr jnb     loc_1412ED85C
     RVA <uintptr_t> DialogueLimiter_Check                                       ({{RUNTIME_VERSION_1_10_75, 0x0126B95E}}, "0F 83 ? ? ? ? 48 8B 0D ? ? ? ? 48 83 C4 48"); //
+    //vr 48 8B C8                                      mov     rcx, rax
     RVA <uintptr_t> StartPlayerDialogue_Call                                    ({{RUNTIME_VERSION_1_10_75, 0x002C548E}}, "48 8B C8 C6 44 24 ? ? C6 44 24 ? ? E8 ? ? ? ? 84 C0");
+    // vr C7 87 D4 01 00 00 01 00 00 00                 mov     dword ptr [rdi+1D4h], 1
     RVA <uintptr_t> SwitchToPlayerCC                                            ({{RUNTIME_VERSION_1_10_75, 0x0083CC1A}}, "C7 87 ? ? ? ? ? ? ? ? 45 84 E4"); // C7 87 D4 01 00 00 01 00 00 00
 
+    // vr TESQuest::GetAliasedRef(uint)
     RVA <_GetQuestAliasHandle>          GetQuestAliasHandle                     ({{RUNTIME_VERSION_1_10_75, 0x005DCDE0}}, "44 8B 45 18 49 8B 0F", 0xC, 1, 5);
+    // vr BGSScene::ResetAllSceneActions(void)
     RVA <_InitSceneActions>             InitSceneActions_Internal               ({{RUNTIME_VERSION_1_10_75, 0x0058EDC0}}, "48 8B 5F 38 48 3B F3", 0x14, 1, 5);
+    // vr BGSScene::SetSceneActive(bool)
     RVA <_StartScene>                   StartScene_Internal                     ({{RUNTIME_VERSION_1_10_75, 0x0058D8F0}}, "40 53 48 83 EC 40 81 61 ? ? ? ? ?");
+    // vr UNUSED there are no function in VR PlayerCharacter::TryDialogueCamera(bool,bool)
     RVA <_StartDialogueCamera>          StartDialogueCamera_Internal            ({{RUNTIME_VERSION_1_10_75, 0x00EA2EA0}}, "88 54 24 10 55 56 41 56"); //
+    // vr PlayerCharacter::SetLastDialogueInput(enum SCENE_ACTION_PLAYER_RESPONSE_TYPE)
     RVA <_SelectDialogueOption>         SelectDialogueOption_Internal           ({{RUNTIME_VERSION_1_10_75, 0x00EB8A90}}, "4C 8B DC 56 48 83 EC 30");
+    // vr enum CHARISMA_CHALLENGE_DIFFICULTY TESTopicInfo::GetChallengeLevel(void)
     RVA <_GetSpeechChallengeLevel>      GetSpeechChallengeLevel                 ({{RUNTIME_VERSION_1_10_75, 0x006218E0}}, "49 8B CE 48 8B B0 ? ? ? ?", 0xA, 1, 5);
+    // vr call    TESTopicInfo::GetSuccessLevel(void)
     RVA <_GetSpeechChallengeState>      GetSpeechChallengeState                 ({{RUNTIME_VERSION_1_10_75, 0x00621B30}}, "E8 ? ? ? ? 83 F8 FF 74 4C 8B C7", 0, 1, 5);
+    // vr call    TESTopicInfo::GetParentInfoGroup(void)
     RVA <_GetInfoGroupParent>           GetInfoGroupParent                      ({{RUNTIME_VERSION_1_10_75, 0x00621280}}, "48 8B CB E8 ? ? ? ? 48 8B F8 48 85 C0 74 28", 0x3, 1, 5);
+    // vr void Actor::UpdateVoiceTimer(bool)
     RVA <_PostDialogueHandler>          PostDialogueHandler_Internal            ({{RUNTIME_VERSION_1_10_75, 0x00DA9930}}, "40 56 41 57 48 81 EC ? ? ? ? 48 8B F1");
-    RVA <_SetPlayerControlsEnabled>     SetPlayerControls1_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21CE0}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7", 0x15, 1, 5);
-    RVA <_SetPlayerControlsEnabled>     SetPlayerControls2_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21E00}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7", 0x3C, 1, 5);
+    // vr call    BSInputEnableManager::EnableUserEvent(uint,uint,bool,UserEvents::SENDER_ID)
+    RVA <_SetPlayerControlsEnabled>     SetPlayerControls1_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21CE0}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x15, 1, 5);
+    // vr call    BSInputEnableManager::EnableOtherEvent(uint,uint,bool,UserEvents::SENDER_ID)
+    RVA <_SetPlayerControlsEnabled>     SetPlayerControls2_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21E00}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x3C, 1, 5);
+    // vr call    BGSQuestInstanceText::ParseString(BSStringT<char,-1,DynamicMemoryManagementPol> &,TESQuest const *,uint)
     RVA <_DoTextReplacement>            DoTextReplacement_Internal              ({{RUNTIME_VERSION_1_10_75, 0x005752B0}}, "44 8B 45 50 48 8D 4C 24 ? 48 8B D5", 0xC, 1, 5);
 
     // Note: the following addresses are offset-adjusted in the Init() method.
+    // vr add     rdi, 20h ; ' '
     RVA <tHashSet<SceneLink, TESTopicInfo*>>            g_sceneLinks            ({{RUNTIME_VERSION_1_10_75, 0x0374FB20}}, "48 83 C7 20 85 F6 75 DF", 0x8, 3, 7);
+    // vr add     rsi, 18h
     RVA <tHashSet<DialoguePrompt, TESTopicInfo*>>       g_dialoguePrompts       ({{RUNTIME_VERSION_1_10_75, 0x0374FAC0}}, "48 83 C6 18 48 83 C7 18", 0xC, 3, 7);
 
+    // vr MenuTopicManager__QInstancePtr in DialogueMenu::Call
     RVA <MenuTopicManager*>     g_menuTopicManager                              ({{RUNTIME_VERSION_1_10_75, 0x05907BB0}}, "48 8B 0D ? ? ? ? 48 83 C4 48", 0, 3, 7);
-    RVA <void*>                 g_inputEnableManager                            ({{RUNTIME_VERSION_1_10_75, 0x05909800}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7", 0, 3, 7);
+    // vr BSInputEnableManager__QInstancePtr in Script::DisablePlayerControlsFunction
+    RVA <void*>                 g_inputEnableManager                            ({{RUNTIME_VERSION_1_10_75, 0x05909800}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0, 3, 7);
 
     _GetInfoForDialogueOption       GetInfoForPlayerDialogueOption_Original;
     _GetInfoForDialogueOption       GetInfoForNPCDialogueOption_Original;
@@ -700,9 +722,9 @@ namespace {
         static BSFixedString dialogueMenu("DialogueMenu");
         if (evn->menuName == dialogueMenu) {
             if (evn->opening) {
-                savedSubtitlePosition = Scaleform::GetSubtitlePosition();
+                //savedSubtitlePosition = Scaleform::GetSubtitlePosition();
             } else {
-                Scaleform::SetSubtitlePosition(savedSubtitlePosition.first, savedSubtitlePosition.second);
+                //Scaleform::SetSubtitlePosition(savedSubtitlePosition.first, savedSubtitlePosition.second);
             }
         }
 
@@ -714,4 +736,13 @@ namespace {
         BSTEventDispatcher<MenuOpenCloseEventEx>* eventDispatcher = Utils::GetOffsetPtr<BSTEventDispatcher<MenuOpenCloseEventEx>>(*G::ui, 0x18);
         eventDispatcher->AddEventSink(&eventSink);
     }
+}
+
+// VR input
+
+RVA <_DialogueMenu__ShouldHandleEvent>          DialogueMenu__ShouldHandleEvent            ({{RUNTIME_VERSION_1_10_75, 0x0}}, "48 89 5C 24 08 57 48 83 EC 20 48 8B 05 ? ? ? ? 48 8B FA 8B");
+
+bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent * inputEvent)
+{
+    return false;
 }

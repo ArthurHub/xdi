@@ -1,6 +1,7 @@
 #pragma once
 
 #include "f4se/GameForms.h"
+#include "f4se/GameInput.h"
 
 //-------------------------
 // Forward Declarations
@@ -326,7 +327,7 @@ STATIC_ASSERT(offsetof(MenuTopicManager, unk57) == 0x57);
 struct SceneLink
 {
     TESTopicInfo*   key;        // 00
-    BGSScene*       scene;      // 08
+    BGSScene*       scene;      // 08 struct TOPIC_INFO_SCENEDATA
     UInt32          phase;      // 10
     UInt32          pad14;      // 14
 
@@ -344,7 +345,7 @@ STATIC_ASSERT(sizeof(SceneLink) == 0x18);
 struct DialoguePrompt
 {
     TESTopicInfo*   key;        // 00
-    BSFixedString   prompt;     // 08
+    BSFixedString   prompt;     // 08 BGSLocalizedString
 
     operator TESTopicInfo*() const { return key; }
     static inline UInt32 GetHash(TESTopicInfo ** key)
@@ -505,3 +506,8 @@ private:
     UInt16  m_bufLen;   // 0A
     UInt32  pad0C;      // 0C
 };
+
+
+// VR input
+
+typedef bool(*_DialogueMenu__ShouldHandleEvent)(InputEvent * inputEvent); // 0x012ED3A0 // 48 89 5C 24 08 57 48 83 EC 20 48 8B 05 ? ? ? ? 48 8B FA 8B
