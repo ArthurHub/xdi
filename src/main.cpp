@@ -21,7 +21,7 @@
 
 #define DEBUG _DEBUG
 #if DEBUG
-#include "Debug.h"
+//#include "Debug.h"
 #endif
 
 IDebugLog gLog;
@@ -283,7 +283,7 @@ bool F4SEPlugin_Load(const F4SEInterface *f4se)
     // ond of VR input
     
     #if DEBUG
-        Debug::Init();
+        //Debug::Init();
     #endif
 
 	return true;

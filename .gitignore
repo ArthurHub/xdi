@@ -16,9 +16,11 @@ src/debug/
 *.userprefs
 
 # Build results
-[Dd]ebug/
+src/x64
+src/x64_v143
+src/[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+src/[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
@@ -37,7 +39,7 @@ bld/
 *.meta
 *.obj
 *.pch
-*.pdb
+#*.pdb
 *.pgc
 *.pgd
 *.rsp
