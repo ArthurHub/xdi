@@ -14,22 +14,24 @@ class TESGlobal;
 namespace G
 {
     void Init();
-    extern RVA<UI*>                         ui;
-    extern RVA<GameVM*>                     gameVM;
-    extern RVA<DataHandler*>                dataHandler;
-    extern RVA<PlayerCharacter*>            player;
-    extern RVA<INISettingCollection*>       iniSettings;
-    extern RVA<INIPrefSettingCollection*>   iniPrefSettings;
+    extern RVA<UI*> ui;
+    extern RVA<GameVM*> gameVM;
+    extern RVA<DataHandler*> dataHandler;
+    extern RVA<PlayerCharacter*> player;
+    extern RVA<INISettingCollection*> iniSettings;
+    extern RVA<INIPrefSettingCollection*> iniPrefSettings;
 
     void OnDataLoaded();
-    extern std::vector<BGSKeyword*>         activationKeywords;
-    extern std::vector<TESGlobal*>          resultGlobals;
+    extern std::vector<BGSKeyword*> activationKeywords;
+    extern std::vector<TESGlobal*> resultGlobals;
 }
 
 // Utilities
-namespace {
+namespace
+{
     template <typename T>
-    bool RegisterForm(std::vector<T*>& dataHolder, const char* pluginName, UInt32 formID) {
+    bool RegisterForm(std::vector<T*>& dataHolder, const char* pluginName, UInt32 formID)
+    {
         TESForm* form = GameUtils::GetFormFromFile(pluginName, formID);
         if (form && form->formType == T::kTypeID) {
             dataHolder.push_back((T*)form);

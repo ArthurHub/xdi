@@ -13,14 +13,15 @@
 #include "f4se/GameRTTI.h"
 #include "f4se/PapyrusVM.h"
 
-namespace GameUtils {
-    bool HasVMScript(TESForm* form, const char* scriptName) {
-
+namespace GameUtils
+{
+    bool HasVMScript(TESForm* form, const char* scriptName)
+    {
         VirtualMachine* vm = (*G::gameVM)->m_virtualMachine;
 
-        IObjectHandlePolicy*  handlePolicy = vm->GetHandlePolicy();
-        UInt64                handle       = handlePolicy->Create(form->formType, form);
-        VMIdentifier*         identifier   = nullptr;
+        IObjectHandlePolicy* handlePolicy = vm->GetHandlePolicy();
+        UInt64 handle = handlePolicy->Create(form->formType, form);
+        VMIdentifier* identifier = nullptr;
 
         if (vm->GetObjectIdentifier(handle, scriptName, 1, &identifier, 0)) {
             // Release reference
@@ -35,7 +36,8 @@ namespace GameUtils {
         return false;
     }
 
-    Setting* GetINISetting(const char* name) {
+    Setting* GetINISetting(const char* name)
+    {
         Setting* setting = (*G::iniSettings)->Get(name);
         if (!setting)
             setting = (*G::iniPrefSettings)->Get(name);
@@ -43,11 +45,13 @@ namespace GameUtils {
         return setting;
     }
 
-    const char* GetReferenceName(TESObjectREFR * refr) {
+    const char* GetReferenceName(TESObjectREFR* refr)
+    {
         return CALL_MEMBER_FN(refr, GetReferenceName)();
     }
 
-    bool HasKeyword(TESForm* form, BGSKeyword* keyword) {
+    bool HasKeyword(TESForm* form, BGSKeyword* keyword)
+    {
         IKeywordFormBase* keywordFormBase = DYNAMIC_CAST(form, TESForm, IKeywordFormBase);
         if (keywordFormBase) {
             auto HasKeyword_Internal = Utils::GetVirtualFunction<_IKeywordFormBase_HasKeyword>(keywordFormBase, 1);
@@ -58,7 +62,8 @@ namespace GameUtils {
         return false;
     }
 
-    TESForm * GetFormFromIdentifier(const std::string & identifier) {
+    TESForm* GetFormFromIdentifier(const std::string& identifier)
+    {
         auto delimiter = identifier.find('|');
         if (delimiter != std::string::npos) {
             std::string modName = identifier.substr(0, delimiter);
@@ -72,7 +77,7 @@ namespace GameUtils {
                     // ESL
                     formID &= 0xFFF;
                     formID |= 0xFE << 24;
-                    formID |= Utils::GetOffset<UInt16>(mod, 0x372) << 12;	// ESL load order
+                    formID |= Utils::GetOffset<UInt16>(mod, 0x372) << 12; // ESL load order
                 } else {
                     formID |= (mod->modIndex) << 24;
                 }
@@ -82,7 +87,8 @@ namespace GameUtils {
         return nullptr;
     }
 
-    TESForm* GetFormFromFile(const char* pluginName, UInt32 formID) {
+    TESForm* GetFormFromFile(const char* pluginName, UInt32 formID)
+    {
         const ModInfo* mod = (*G::dataHandler)->LookupModByName(pluginName);
         if (mod && mod->modIndex != 0xFF) {
             UInt32 flags = Utils::GetOffset<UInt32>(mod, 0x334);
@@ -90,7 +96,7 @@ namespace GameUtils {
                 // ESL
                 formID &= 0xFFF;
                 formID |= 0xFE << 24;
-                formID |= Utils::GetOffset<UInt16>(mod, 0x372) << 12;	// ESL load order
+                formID |= Utils::GetOffset<UInt16>(mod, 0x372) << 12; // ESL load order
             } else {
                 formID |= (mod->modIndex) << 24;
             }

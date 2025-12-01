@@ -17,64 +17,65 @@
 #include "f4se/GameRTTI.h"
 #include "f4se/GameMenus.h"
 
-namespace DialogueEx {
+namespace DialogueEx
+{
     //--------------------
     // Addresses [23]
     //--------------------
 
     // vr BGSSceneActionPlayerDialogue::GetCurrentTopicInfo(BGSScene *,TESObjectREFR *,SCENE_ACTION_PLAYER_RESPONSE_TYPE)
-    RVA <uintptr_t> GetInfoForPlayerDialogueOption_HookTarget                   ({{RUNTIME_VERSION_1_10_75, 0x002C5241}}, "4C 8B C3 41 B9 ? ? ? ? 49 8B D5", 0xF);
-    RVA <uintptr_t> GetInfoForNPCDialogueOption_HookTarget                      ({{RUNTIME_VERSION_1_10_75, 0x002C55D7}}, "4C 8B 05 ? ? ? ? 41 B9 ? ? ? ? 49 8B D5", 0x13);
+    RVA<uintptr_t> GetInfoForPlayerDialogueOption_HookTarget({{RUNTIME_VERSION_1_10_75, 0x002C5241}}, "4C 8B C3 41 B9 ? ? ? ? 49 8B D5", 0xF);
+    RVA<uintptr_t> GetInfoForNPCDialogueOption_HookTarget({{RUNTIME_VERSION_1_10_75, 0x002C55D7}}, "4C 8B 05 ? ? ? ? 41 B9 ? ? ? ? 49 8B D5", 0x13);
     // vr BGSSceneActionNPCResponseDialogue::GetCurrentTopicInfo(BGSScene *)
-    RVA <uintptr_t> GetNPCResponseInfoForOption_HookTarget                      ({{RUNTIME_VERSION_1_10_75, 0x002C3408}}, "49 8B D5 49 8B CF E8 ? ? ? ? 48 85 C0", 0x6);
+    RVA<uintptr_t> GetNPCResponseInfoForOption_HookTarget({{RUNTIME_VERSION_1_10_75, 0x002C3408}}, "49 8B D5 49 8B CF E8 ? ? ? ? 48 85 C0", 0x6);
     // vr call    qword ptr [rax+270h]
-    RVA <uintptr_t> IsPlayerTalking_Call                                        ({{RUNTIME_VERSION_1_10_75, 0x00D91383}}, "FF 90 70 02 00 00 84 C0 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 80 78 4E 00");
+    RVA<uintptr_t> IsPlayerTalking_Call({{RUNTIME_VERSION_1_10_75, 0x00D91383}}, "FF 90 70 02 00 00 84 C0 0F 85 ? ? ? ? 48 8B 05 ? ? ? ? 80 78 4E 00");
     // vr jnb     loc_1412ED85C
-    RVA <uintptr_t> DialogueLimiter_Check                                       ({{RUNTIME_VERSION_1_10_75, 0x0126B95E}}, "0F 83 ? ? ? ? 48 8B 0D ? ? ? ? 48 83 C4 48"); //
+    RVA<uintptr_t> DialogueLimiter_Check({{RUNTIME_VERSION_1_10_75, 0x0126B95E}}, "0F 83 ? ? ? ? 48 8B 0D ? ? ? ? 48 83 C4 48"); //
     //vr 48 8B C8                                      mov     rcx, rax
-    RVA <uintptr_t> StartPlayerDialogue_Call                                    ({{RUNTIME_VERSION_1_10_75, 0x002C548E}}, "48 8B C8 C6 44 24 ? ? C6 44 24 ? ? E8 ? ? ? ? 84 C0");
+    RVA<uintptr_t> StartPlayerDialogue_Call({{RUNTIME_VERSION_1_10_75, 0x002C548E}}, "48 8B C8 C6 44 24 ? ? C6 44 24 ? ? E8 ? ? ? ? 84 C0");
     // vr C7 87 D4 01 00 00 01 00 00 00                 mov     dword ptr [rdi+1D4h], 1
-    RVA <uintptr_t> SwitchToPlayerCC                                            ({{RUNTIME_VERSION_1_10_75, 0x0083CC1A}}, "C7 87 ? ? ? ? ? ? ? ? 45 84 E4"); // C7 87 D4 01 00 00 01 00 00 00
+    RVA<uintptr_t> SwitchToPlayerCC({{RUNTIME_VERSION_1_10_75, 0x0083CC1A}}, "C7 87 ? ? ? ? ? ? ? ? 45 84 E4"); // C7 87 D4 01 00 00 01 00 00 00
 
     // vr TESQuest::GetAliasedRef(uint)
-    RVA <_GetQuestAliasHandle>          GetQuestAliasHandle                     ({{RUNTIME_VERSION_1_10_75, 0x005DCDE0}}, "44 8B 45 18 49 8B 0F", 0xC, 1, 5);
+    RVA<_GetQuestAliasHandle> GetQuestAliasHandle({{RUNTIME_VERSION_1_10_75, 0x005DCDE0}}, "44 8B 45 18 49 8B 0F", 0xC, 1, 5);
     // vr BGSScene::ResetAllSceneActions(void)
-    RVA <_InitSceneActions>             InitSceneActions_Internal               ({{RUNTIME_VERSION_1_10_75, 0x0058EDC0}}, "48 8B 5F 38 48 3B F3", 0x14, 1, 5);
+    RVA<_InitSceneActions> InitSceneActions_Internal({{RUNTIME_VERSION_1_10_75, 0x0058EDC0}}, "48 8B 5F 38 48 3B F3", 0x14, 1, 5);
     // vr BGSScene::SetSceneActive(bool)
-    RVA <_StartScene>                   StartScene_Internal                     ({{RUNTIME_VERSION_1_10_75, 0x0058D8F0}}, "40 53 48 83 EC 40 81 61 ? ? ? ? ?");
+    RVA<_StartScene> StartScene_Internal({{RUNTIME_VERSION_1_10_75, 0x0058D8F0}}, "40 53 48 83 EC 40 81 61 ? ? ? ? ?");
     // vr UNUSED there are no function in VR PlayerCharacter::TryDialogueCamera(bool,bool)
-    RVA <_StartDialogueCamera>          StartDialogueCamera_Internal            ({{RUNTIME_VERSION_1_10_75, 0x00EA2EA0}}, "88 54 24 10 55 56 41 56"); //
+    RVA<_StartDialogueCamera> StartDialogueCamera_Internal({{RUNTIME_VERSION_1_10_75, 0x00EA2EA0}}, "88 54 24 10 55 56 41 56"); //
     // vr PlayerCharacter::SetLastDialogueInput(enum SCENE_ACTION_PLAYER_RESPONSE_TYPE)
-    RVA <_SelectDialogueOption>         SelectDialogueOption_Internal           ({{RUNTIME_VERSION_1_10_75, 0x00EB8A90}}, "4C 8B DC 56 48 83 EC 30");
+    RVA<_SelectDialogueOption> SelectDialogueOption_Internal({{RUNTIME_VERSION_1_10_75, 0x00EB8A90}}, "4C 8B DC 56 48 83 EC 30");
     // vr enum CHARISMA_CHALLENGE_DIFFICULTY TESTopicInfo::GetChallengeLevel(void)
-    RVA <_GetSpeechChallengeLevel>      GetSpeechChallengeLevel                 ({{RUNTIME_VERSION_1_10_75, 0x006218E0}}, "49 8B CE 48 8B B0 ? ? ? ?", 0xA, 1, 5);
+    RVA<_GetSpeechChallengeLevel> GetSpeechChallengeLevel({{RUNTIME_VERSION_1_10_75, 0x006218E0}}, "49 8B CE 48 8B B0 ? ? ? ?", 0xA, 1, 5);
     // vr call    TESTopicInfo::GetSuccessLevel(void)
-    RVA <_GetSpeechChallengeState>      GetSpeechChallengeState                 ({{RUNTIME_VERSION_1_10_75, 0x00621B30}}, "E8 ? ? ? ? 83 F8 FF 74 4C 8B C7", 0, 1, 5);
+    RVA<_GetSpeechChallengeState> GetSpeechChallengeState({{RUNTIME_VERSION_1_10_75, 0x00621B30}}, "E8 ? ? ? ? 83 F8 FF 74 4C 8B C7", 0, 1, 5);
     // vr call    TESTopicInfo::GetParentInfoGroup(void)
-    RVA <_GetInfoGroupParent>           GetInfoGroupParent                      ({{RUNTIME_VERSION_1_10_75, 0x00621280}}, "48 8B CB E8 ? ? ? ? 48 8B F8 48 85 C0 74 28", 0x3, 1, 5);
+    RVA<_GetInfoGroupParent> GetInfoGroupParent({{RUNTIME_VERSION_1_10_75, 0x00621280}}, "48 8B CB E8 ? ? ? ? 48 8B F8 48 85 C0 74 28", 0x3, 1, 5);
     // vr void Actor::UpdateVoiceTimer(bool)
-    RVA <_PostDialogueHandler>          PostDialogueHandler_Internal            ({{RUNTIME_VERSION_1_10_75, 0x00DA9930}}, "40 56 41 57 48 81 EC ? ? ? ? 48 8B F1");
+    RVA<_PostDialogueHandler> PostDialogueHandler_Internal({{RUNTIME_VERSION_1_10_75, 0x00DA9930}}, "40 56 41 57 48 81 EC ? ? ? ? 48 8B F1");
     // vr call    BSInputEnableManager::EnableUserEvent(uint,uint,bool,UserEvents::SENDER_ID)
-    RVA <_SetPlayerControlsEnabled>     SetPlayerControls1_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21CE0}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x15, 1, 5);
+    RVA<_SetPlayerControlsEnabled> SetPlayerControls1_Internal({{RUNTIME_VERSION_1_10_75, 0x01B21CE0}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x15, 1, 5);
     // vr call    BSInputEnableManager::EnableOtherEvent(uint,uint,bool,UserEvents::SENDER_ID)
-    RVA <_SetPlayerControlsEnabled>     SetPlayerControls2_Internal             ({{RUNTIME_VERSION_1_10_75, 0x01B21E00}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x3C, 1, 5);
+    RVA<_SetPlayerControlsEnabled> SetPlayerControls2_Internal({{RUNTIME_VERSION_1_10_75, 0x01B21E00}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0x3C, 1, 5);
     // vr call    BGSQuestInstanceText::ParseString(BSStringT<char,-1,DynamicMemoryManagementPol> &,TESQuest const *,uint)
-    RVA <_DoTextReplacement>            DoTextReplacement_Internal              ({{RUNTIME_VERSION_1_10_75, 0x005752B0}}, "44 8B 45 50 48 8D 4C 24 ? 48 8B D5", 0xC, 1, 5);
+    RVA<_DoTextReplacement> DoTextReplacement_Internal({{RUNTIME_VERSION_1_10_75, 0x005752B0}}, "44 8B 45 50 48 8D 4C 24 ? 48 8B D5", 0xC, 1, 5);
 
     // Note: the following addresses are offset-adjusted in the Init() method.
     // vr add     rdi, 20h ; ' '
-    RVA <tHashSet<SceneLink, TESTopicInfo*>>            g_sceneLinks            ({{RUNTIME_VERSION_1_10_75, 0x0374FB20}}, "48 83 C7 20 85 F6 75 DF", 0x8, 3, 7);
+    RVA<tHashSet<SceneLink, TESTopicInfo*>> g_sceneLinks({{RUNTIME_VERSION_1_10_75, 0x0374FB20}}, "48 83 C7 20 85 F6 75 DF", 0x8, 3, 7);
     // vr add     rsi, 18h
-    RVA <tHashSet<DialoguePrompt, TESTopicInfo*>>       g_dialoguePrompts       ({{RUNTIME_VERSION_1_10_75, 0x0374FAC0}}, "48 83 C6 18 48 83 C7 18", 0xC, 3, 7);
+    RVA<tHashSet<DialoguePrompt, TESTopicInfo*>> g_dialoguePrompts({{RUNTIME_VERSION_1_10_75, 0x0374FAC0}}, "48 83 C6 18 48 83 C7 18", 0xC, 3, 7);
 
     // vr MenuTopicManager__QInstancePtr in DialogueMenu::Call
-    RVA <MenuTopicManager*>     g_menuTopicManager                              ({{RUNTIME_VERSION_1_10_75, 0x05907BB0}}, "48 8B 0D ? ? ? ? 48 83 C4 48", 0, 3, 7);
+    RVA<MenuTopicManager*> g_menuTopicManager({{RUNTIME_VERSION_1_10_75, 0x05907BB0}}, "48 8B 0D ? ? ? ? 48 83 C4 48", 0, 3, 7);
     // vr BSInputEnableManager__QInstancePtr in Script::DisablePlayerControlsFunction
-    RVA <void*>                 g_inputEnableManager                            ({{RUNTIME_VERSION_1_10_75, 0x05909800}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0, 3, 7);
+    RVA<void*> g_inputEnableManager({{RUNTIME_VERSION_1_10_75, 0x05909800}}, "48 8B 0D ? ? ? ? 45 33 C9 44 8B C7 C7 44 24 20 03 00 00 00", 0, 3, 7);
 
-    _GetInfoForDialogueOption       GetInfoForPlayerDialogueOption_Original;
-    _GetInfoForDialogueOption       GetInfoForNPCDialogueOption_Original;
-    _GetNPCResponseInfoForOption    GetNPCResponseInfoForOption_Original;
+    _GetInfoForDialogueOption GetInfoForPlayerDialogueOption_Original;
+    _GetInfoForDialogueOption GetInfoForNPCDialogueOption_Original;
+    _GetNPCResponseInfoForOption GetNPCResponseInfoForOption_Original;
 
     bool g_frameworkActiveOverride = false; // for debug only
 
@@ -82,12 +83,15 @@ namespace DialogueEx {
     // Scene Links
     //-----------------------
 
-    SceneLink* GetSceneLink(TESTopicInfo* topicInfo) {
+    SceneLink* GetSceneLink(TESTopicInfo* topicInfo)
+    {
         return g_sceneLinks->Find(&topicInfo);
     }
 
-    void SetSceneLink(TESTopicInfo* topicInfo, BGSScene* scene, int phase) {
-        if (!topicInfo) return;
+    void SetSceneLink(TESTopicInfo* topicInfo, BGSScene* scene, int phase)
+    {
+        if (!topicInfo)
+            return;
         SceneLink* sceneLink = g_sceneLinks->Find(&topicInfo);
         if (sceneLink) {
             sceneLink->scene = scene;
@@ -101,8 +105,10 @@ namespace DialogueEx {
         }
     }
 
-    void StartScene(BGSScene* scene, int phase) {
-        if (!scene) return;
+    void StartScene(BGSScene* scene, int phase)
+    {
+        if (!scene)
+            return;
         BGSScene* currentScene = (*G::player)->GetCurrentScene();
 
         if (currentScene && currentScene != scene)
@@ -119,20 +125,20 @@ namespace DialogueEx {
     //-------------------------
 
     // Controls whether player dialogue is enabled.
-    void SetPlayerDialogue(bool enable) {
+    void SetPlayerDialogue(bool enable)
+    {
         if (enable) {
             // Restore player dialogue starting
-            unsigned char data[] = { 0x48, 0x8B, 0xC8 };
+            unsigned char data[] = {0x48, 0x8B, 0xC8};
             SafeWriteBuf(StartPlayerDialogue_Call.GetUIntPtr(), &data, sizeof(data));
 
             // Restore dialogue cam switching to player
             // C7 87 D4 01 00 00 01 00 00 00
             // ------------------^^
             SafeWrite8(SwitchToPlayerCC.GetUIntPtr() + 6, 0x1);
-
         } else {
             // Disable player dialogue starting
-            unsigned char data[] = { 0xEB, 0x14, 0x90 };
+            unsigned char data[] = {0xEB, 0x14, 0x90};
             SafeWriteBuf(StartPlayerDialogue_Call.GetUIntPtr(), &data, sizeof(data));
 
             // Disable dialogue cam switching to player
@@ -143,7 +149,8 @@ namespace DialogueEx {
     }
 
     // Checks to see whether the given scene action is active in the given phase.
-    bool IsSceneActionWithinPhase(BGSSceneAction* action, UInt32 phase) {
+    bool IsSceneActionWithinPhase(BGSSceneAction* action, UInt32 phase)
+    {
         if (action->startPhase <= phase && action->endPhase >= phase)
             return true;
         else
@@ -151,10 +158,11 @@ namespace DialogueEx {
     }
 
     // Returns the reference associated with the action.
-    TESObjectREFR* GetActionRef(BGSScene* scene, BGSSceneAction* action){
+    TESObjectREFR* GetActionRef(BGSScene* scene, BGSSceneAction* action)
+    {
         if (scene) {
-            UInt32          targetHandle = 0;
-            TESObjectREFR*  targetRef    = nullptr;
+            UInt32 targetHandle = 0;
+            TESObjectREFR* targetRef = nullptr;
             GetQuestAliasHandle(scene->owningQuest, &targetHandle, action->aliasID);
             if (targetHandle) {
                 LookupREFRByHandle(&targetHandle, &targetRef);
@@ -165,7 +173,8 @@ namespace DialogueEx {
     }
 
     // Returns the currently executing player dialogue action, or NULL if no player dialogue action is currently active.
-    BGSSceneActionPlayerDialogue* GetCurrentPlayerDialogueAction() {
+    BGSSceneActionPlayerDialogue* GetCurrentPlayerDialogueAction()
+    {
         BGSScene* scene = (*G::player)->GetCurrentScene();
         if (scene) {
             for (int i = 0; i < scene->actions.count; i++) {
@@ -180,8 +189,10 @@ namespace DialogueEx {
         return nullptr;
     }
 
-    bool SelectDialogueOption(int option) {
-        if (!(*g_menuTopicManager)->awaitingPlayerInput) return false;
+    bool SelectDialogueOption(int option)
+    {
+        if (!(*g_menuTopicManager)->awaitingPlayerInput)
+            return false;
         if (auto playerDialogue = GetCurrentPlayerDialogueAction()) {
             if (IsFrameworkActive()) {
                 // We're using option 5 and up for additional options. (Opt 5 = Opt 0)
@@ -194,12 +205,13 @@ namespace DialogueEx {
             return false;
         }
     }
-    
+
     // Returns the target of the current player dialogue action, or NULL if no player dialogue action is currently active.
-    TESObjectREFR* GetCurrentPlayerDialogueTarget() {
+    TESObjectREFR* GetCurrentPlayerDialogueTarget()
+    {
         if (auto playerDialogue = GetCurrentPlayerDialogueAction()) {
-            UInt32          targetHandle = 0;
-            TESObjectREFR*  targetRef = nullptr;
+            UInt32 targetHandle = 0;
+            TESObjectREFR* targetRef = nullptr;
             BGSScene* scene = (*G::player)->GetCurrentScene();
             if (scene) {
                 GetQuestAliasHandle(scene->owningQuest, &targetHandle, playerDialogue->aliasID);
@@ -216,13 +228,15 @@ namespace DialogueEx {
     // Topic Info
     //-------------------------
 
-    bool EvaluateInfoConditions(TESTopicInfo* info, BGSSceneAction* action, bool swap) {
+    bool EvaluateInfoConditions(TESTopicInfo* info, BGSSceneAction* action, bool swap)
+    {
         Condition* conditions = info->conditions;
-        if (!conditions) return true;
+        if (!conditions)
+            return true;
 
         // Get condition target.
-        UInt32          targetHandle = 0;
-        TESObjectREFR*  targetRef = nullptr;
+        UInt32 targetHandle = 0;
+        TESObjectREFR* targetRef = nullptr;
         BGSScene* scene = (*G::player)->GetCurrentScene();
         if (scene) {
             GetQuestAliasHandle(scene->owningQuest, &targetHandle, action->aliasID);
@@ -250,7 +264,6 @@ namespace DialogueEx {
         std::vector<DialogueOption> options;
 
         if (auto playerDialogue = GetCurrentPlayerDialogueAction()) {
-
             bool active = IsFrameworkActive();
 
             std::vector<TESTopicInfo*> infos;
@@ -264,7 +277,8 @@ namespace DialogueEx {
 
             for (int i = 0; i < infos.size(); i++) {
                 TESTopicInfo* info = infos[i];
-                if (!info) continue;
+                if (!info)
+                    continue;
 
                 TESTopicInfo* originalInfo = info;
                 while (info->sharedInfo) {
@@ -273,13 +287,13 @@ namespace DialogueEx {
 
                 if (active) {
                     // Skip Say Once infos that have already been said
-                    if ((info->infoFlags & TESTopicInfo::kFlag_SayOnce) && 
+                    if ((info->infoFlags & TESTopicInfo::kFlag_SayOnce) &&
                         (info->infoFlags & TESTopicInfo::kFlag_HasBeenSaid))
                         continue;
                 }
 
-                int vanillaDialogueOrder[] = { 3, 0, 1, 2 };   // Question, Positive, Negative, Neutral
-                
+                int vanillaDialogueOrder[] = {3, 0, 1, 2}; // Question, Positive, Negative, Neutral
+
                 // Get prompt
                 auto prompt = g_dialoguePrompts->Find(&info);
 
@@ -293,7 +307,9 @@ namespace DialogueEx {
                 }
 
                 // Get NPC response TopicInfo for dialogue cues.
-                TESTopicInfo* npcResponseInfo = active ? GetNPCInfo(playerDialogue, i) : GetInfoForNPCDialogueOption_Original(playerDialogue, currentScene, *G::player, vanillaDialogueOrder[i]);
+                TESTopicInfo* npcResponseInfo = active
+                    ? GetNPCInfo(playerDialogue, i)
+                    : GetInfoForNPCDialogueOption_Original(playerDialogue, currentScene, *G::player, vanillaDialogueOrder[i]);
                 if (!npcResponseInfo) {
                     // No NPC response info - look one phase ahead (only) for a NPC Response action.
                     if (auto npcResponseAction = FindNextNPCResponseAction(currentScene, currentScene->currentPhase)) {
@@ -310,19 +326,21 @@ namespace DialogueEx {
                 // Get scene link for response
                 SceneLink* sceneLink = npcResponseInfo ? GetSceneLink(npcResponseInfo) : nullptr;
 
-                DialogueOption option       = {};
-                option.optionID             = active ? i : vanillaDialogueOrder[i];
-                option.info                 = info;
-                option.promptText           = prompt ? prompt->prompt.c_str() : "";
-                option.responseText         = responseText;
-                option.enabled              = active ? EvaluateInfoConditions(originalInfo, playerDialogue) : true;
-                option.said                 = (info->infoFlags & TESTopicInfo::kFlag_HasBeenSaid) != 0;
-                option.challengeLevel       = GetSpeechChallengeLevel(info);
-                option.challengeResult      = GetSpeechChallengeState(info);
-                option.linkedToSelf         = sceneLink ? (currentScene == sceneLink->scene && playerDialogue->startPhase >= sceneLink->phase && playerDialogue->endPhase <= sceneLink->phase) : false;
-                option.endsScene            = npcResponseInfo ? (npcResponseInfo->infoFlags & TESTopicInfo::kFlag_EndRunningScene) != 0 : false;
-                option.isBarterOption       = npcResponseInfo ? GameUtils::HasVMScript(npcResponseInfo, "VendorInfoScript") : false;
-                option.isInventoryOption    = npcResponseInfo ? GameUtils::HasVMScript(npcResponseInfo, "OpenInventoryInfoScript") : false;
+                DialogueOption option = {};
+                option.optionID = active ? i : vanillaDialogueOrder[i];
+                option.info = info;
+                option.promptText = prompt ? prompt->prompt.c_str() : "";
+                option.responseText = responseText;
+                option.enabled = active ? EvaluateInfoConditions(originalInfo, playerDialogue) : true;
+                option.said = (info->infoFlags & TESTopicInfo::kFlag_HasBeenSaid) != 0;
+                option.challengeLevel = GetSpeechChallengeLevel(info);
+                option.challengeResult = GetSpeechChallengeState(info);
+                option.linkedToSelf = sceneLink
+                    ? (currentScene == sceneLink->scene && playerDialogue->startPhase >= sceneLink->phase && playerDialogue->endPhase <= sceneLink->phase)
+                    : false;
+                option.endsScene = npcResponseInfo ? (npcResponseInfo->infoFlags & TESTopicInfo::kFlag_EndRunningScene) != 0 : false;
+                option.isBarterOption = npcResponseInfo ? GameUtils::HasVMScript(npcResponseInfo, "VendorInfoScript") : false;
+                option.isInventoryOption = npcResponseInfo ? GameUtils::HasVMScript(npcResponseInfo, "OpenInventoryInfoScript") : false;
                 options.push_back(option);
             }
         }
@@ -330,19 +348,20 @@ namespace DialogueEx {
         return options;
     }
 
-    std::vector<TESTopicInfo*> GetVanillaInfos() {
+    std::vector<TESTopicInfo*> GetVanillaInfos()
+    {
         std::vector<TESTopicInfo*> infos;
 
         if (auto playerDialogue = GetCurrentPlayerDialogueAction()) {
             BGSScene* scene = (*G::player)->GetCurrentScene();
 
             // Get dialogue target
-            UInt32          targetHandle = 0;
-            TESObjectREFR*  targetRef    = nullptr;
+            UInt32 targetHandle = 0;
+            TESObjectREFR* targetRef = nullptr;
             GetQuestAliasHandle(scene->owningQuest, &targetHandle, playerDialogue->aliasID);
             LookupREFRByHandle(&targetHandle, &targetRef);
 
-            int dialogueOrder[] = { 3, 0, 1, 2 };   // Question, Positive, Negative, Neutral
+            int dialogueOrder[] = {3, 0, 1, 2}; // Question, Positive, Negative, Neutral
             for (int i = 0; i < 4; i++) {
                 TESTopicInfo* info = GetInfoForPlayerDialogueOption_Original(playerDialogue, scene, targetRef, dialogueOrder[i]);
                 infos.push_back(info);
@@ -351,26 +370,30 @@ namespace DialogueEx {
         return infos;
     }
 
-    void BuildDialogueMap(bool force) {
+    void BuildDialogueMap(bool force)
+    {
         BGSSceneActionPlayerDialogue* playerDialogue = GetCurrentPlayerDialogueAction();
-        if (!playerDialogue) return;
+        if (!playerDialogue)
+            return;
         BGSScene* currentScene = (*G::player)->GetCurrentScene();
 
         // If we already have a map for this scene + scene action then return.
-        if (!force && g_dialogueHolder.scene == currentScene && g_dialogueHolder.playerDialogue == playerDialogue) return;
+        if (!force && g_dialogueHolder.scene == currentScene && g_dialogueHolder.playerDialogue == playerDialogue)
+            return;
 
         g_dialogueHolder.dialogueMap.clear();
 
         for (int c = 0; c < 4; c++) {
-            TESTopic* playerTopic   = playerDialogue->response[c];
-            TESTopic* npcTopic      = playerDialogue->npcResponse[c];
-            int playerInfoCount     = playerTopic->topicInfoCount;
-            int npcInfoCount        = npcTopic ? npcTopic->topicInfoCount : 0;
+            TESTopic* playerTopic = playerDialogue->response[c];
+            TESTopic* npcTopic = playerDialogue->npcResponse[c];
+            int playerInfoCount = playerTopic->topicInfoCount;
+            int npcInfoCount = npcTopic ? npcTopic->topicInfoCount : 0;
 
             // Loop through each player TopicInfo in the dialogue topic.
             for (int i = 0; i < playerInfoCount; i++) {
                 TESTopicInfo* playerInfo = playerTopic->topicInfos[i];
-                if (!playerInfo->responses && !playerInfo->sharedInfo) continue;    // Skip over infos with no content.
+                if (!playerInfo->responses && !playerInfo->sharedInfo)
+                    continue; // Skip over infos with no content.
 
                 std::vector<TESTopicInfo*> npcResponses;
 
@@ -413,20 +436,21 @@ namespace DialogueEx {
                 _MESSAGE("Response: %08X", response->formID);
             }
         }*/
-
     }
 
     // Returns player response TopicInfos.
-    std::vector<TESTopicInfo*> GetPlayerInfos() {
+    std::vector<TESTopicInfo*> GetPlayerInfos()
+    {
         BuildDialogueMap();
         std::vector<TESTopicInfo*> infos;
         for (auto const& info : g_dialogueHolder.dialogueMap) {
             infos.push_back(info.first);
         }
-        return infos;        
+        return infos;
     }
 
-    TESTopicInfo* GetPlayerInfo(BGSSceneActionPlayerDialogue* playerDialogue, int optionID) {
+    TESTopicInfo* GetPlayerInfo(BGSSceneActionPlayerDialogue* playerDialogue, int optionID)
+    {
         BuildDialogueMap();
         if (optionID < g_dialogueHolder.dialogueMap.size()) {
             return g_dialogueHolder.dialogueMap[optionID].first;
@@ -442,8 +466,10 @@ namespace DialogueEx {
         BuildDialogueMap();
         auto npcInfos = g_dialogueHolder.dialogueMap[optionID].second;
         for (TESTopicInfo* info : npcInfos) {
-            if (info->flags & TESForm::kFlag_IsDeleted) continue;
-            if ((info->infoFlags & TESTopicInfo::kFlag_SayOnce) && (info->infoFlags & TESTopicInfo::kFlag_HasBeenSaid)) continue;
+            if (info->flags & TESForm::kFlag_IsDeleted)
+                continue;
+            if ((info->infoFlags & TESTopicInfo::kFlag_SayOnce) && (info->infoFlags & TESTopicInfo::kFlag_HasBeenSaid))
+                continue;
             if (EvaluateInfoConditions(info, playerDialogue, true)) {
                 return info;
             }
@@ -458,17 +484,17 @@ namespace DialogueEx {
     {
         // Vector of vector of TESTopicInfo
         // infos[optionID][items inside the infogroup]
-        std::vector<std::vector<TESTopicInfo*>> infos(optionID+1, std::vector<TESTopicInfo*>());
+        std::vector<std::vector<TESTopicInfo*>> infos(optionID + 1, std::vector<TESTopicInfo*>());
 
         std::map<TESTopicInfo*, int> infoGroupMap;
-        int idx = 0;    // The next available free slot in the vector.
+        int idx = 0; // The next available free slot in the vector.
 
         for (int c = 0; c < 4; c++) {
             TESTopic* topic = npcDialogue->response[c];
-            int infoCount = topic ? topic->topicInfoCount : 0;            
+            int infoCount = topic ? topic->topicInfoCount : 0;
 
             // Loop through all TopicInfos while idx <= optionID+1
-            for (int i = 0; i < infoCount && idx <= optionID+1; i++) {
+            for (int i = 0; i < infoCount && idx <= optionID + 1; i++) {
                 TESTopicInfo* info = topic->topicInfos[i];
 
                 if (info->flags & TESTopicInfo::kFlag_InfoGroup) {
@@ -512,7 +538,8 @@ namespace DialogueEx {
 
     // Returns the NPC Response Action in the next phase, if present. Otherwise returns NULL.
     // TODO: Should check phase conditions.
-    BGSSceneActionNPCResponseDialogue* FindNextNPCResponseAction(BGSScene* scene, int currentPhase) {
+    BGSSceneActionNPCResponseDialogue* FindNextNPCResponseAction(BGSScene* scene, int currentPhase)
+    {
         if (scene) {
             for (int i = 0; i < scene->actions.count; i++) {
                 BGSSceneAction* action = scene->actions[i];
@@ -569,7 +596,7 @@ namespace DialogueEx {
             TESTopicInfo* info = GetPlayerInfo(playerDialogue, selectedOption);
 
             if (info) {
-                SetPlayerDialogue(false);   // Disable player dialogue
+                SetPlayerDialogue(false); // Disable player dialogue
 
                 // Mark info as 'said'.
                 info->MarkChanged(1 << 30);
@@ -581,7 +608,6 @@ namespace DialogueEx {
                     _MESSAGE("Following scene link from player dialogue.");
                     StartScene(sceneLink->scene, sceneLink->phase);
                 }
-                
             } else {
                 // Info not found...
                 // Reset selectedOption to 4 so that the game doesn't keep trying to ask us for a non-existent TopicInfo.
@@ -590,7 +616,7 @@ namespace DialogueEx {
 
             return info;
         }
-        SetPlayerDialogue(true);   // Re-enable player dialogue
+        SetPlayerDialogue(true); // Re-enable player dialogue
         return GetInfoForPlayerDialogueOption_Original(playerDialogue, scene, dialogueTarget, dialogueOption);
     }
 
@@ -650,13 +676,15 @@ namespace DialogueEx {
     // Utilities
     //-------------------------
 
-    void SetXDIResult(float value) {
+    void SetXDIResult(float value)
+    {
         for (TESGlobal* resultGlobal : G::resultGlobals) {
             resultGlobal->value = value;
         }
     }
 
-    void SetInputEnableFlags(int type, UInt32 flags, bool enabled) {
+    void SetInputEnableFlags(int type, UInt32 flags, bool enabled)
+    {
         BSFixedString menuName("DialogueMenu");
         if ((*G::ui)->IsMenuOpen(menuName)) {
             IMenu* menu = (*G::ui)->GetMenu(menuName);
@@ -671,17 +699,20 @@ namespace DialogueEx {
 
     // Controls the Wheel Zoom restriction on the DialogueMenu input layer.
     // This is so that players can scroll in the dialogue menu without switching to third-person.
-    void SetWheelZoomEnabled(bool enabled) {
+    void SetWheelZoomEnabled(bool enabled)
+    {
         SetInputEnableFlags(1, InputEnableManager::kInputLayer_WheelZoom, enabled);
     }
 
     // For dpad navigation on gamepads
-    void SetFavoritesEnabled(bool enabled) {
+    void SetFavoritesEnabled(bool enabled)
+    {
         SetInputEnableFlags(2, InputEnableManager::kInputLayer_Favorites, enabled);
     }
 
     // For time-limited dialogue decisions.
-    void SetMovementEnabled(bool enabled) {
+    void SetMovementEnabled(bool enabled)
+    {
         SetInputEnableFlags(1, InputEnableManager::kInputLayer_Movement, enabled);
     }
 
@@ -694,14 +725,16 @@ namespace DialogueEx {
     bool IsFrameworkActive()
     {
         if (auto playerDialogue = GetCurrentPlayerDialogueAction()) {
-            if (g_frameworkActiveOverride) return true;
+            if (g_frameworkActiveOverride)
+                return true;
 
             BGSScene* currentScene = (*G::player)->GetCurrentScene();
             IKeywordFormBase* keywordFormBase = DYNAMIC_CAST(currentScene, BGSScene, IKeywordFormBase);
             if (keywordFormBase) {
                 auto HasKeyword_Internal = Utils::GetVirtualFunction<_IKeywordFormBase_HasKeyword>(keywordFormBase, 1);
                 for (BGSKeyword* activationKeyword : G::activationKeywords) {
-                    if (HasKeyword_Internal(keywordFormBase, activationKeyword, 0)) return true;
+                    if (HasKeyword_Internal(keywordFormBase, activationKeyword, 0))
+                        return true;
                 }
             }
         }
@@ -712,13 +745,15 @@ namespace DialogueEx {
 //-----------------------
 // Internal
 //-----------------------
-namespace {
+namespace
+{
     DialogueHolder g_dialogueHolder;
 
     std::pair<float, float> savedSubtitlePosition;
 
     // Event Handlers
-    EventResult MenuOpenCloseHandler::ReceiveEvent(MenuOpenCloseEventEx * evn, void * dispatcher) {
+    EventResult MenuOpenCloseHandler::ReceiveEvent(MenuOpenCloseEventEx* evn, void* dispatcher)
+    {
         static BSFixedString dialogueMenu("DialogueMenu");
         if (evn->menuName == dialogueMenu) {
             if (evn->opening) {
@@ -730,6 +765,7 @@ namespace {
 
         return kEvent_Continue;
     }
+
     void MenuOpenCloseHandler::Register()
     {
         static MenuOpenCloseHandler eventSink;
@@ -740,9 +776,9 @@ namespace {
 
 // VR input
 
-RVA <_DialogueMenu__ShouldHandleEvent>          DialogueMenu__ShouldHandleEvent            ({{RUNTIME_VERSION_1_10_75, 0x0}}, "48 89 5C 24 08 57 48 83 EC 20 48 8B 05 ? ? ? ? 48 8B FA 8B");
+RVA<_DialogueMenu__ShouldHandleEvent> DialogueMenu__ShouldHandleEvent({{RUNTIME_VERSION_1_10_75, 0x0}}, "48 89 5C 24 08 57 48 83 EC 20 48 8B 05 ? ? ? ? 48 8B FA 8B");
 
-bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent * inputEvent)
+bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent* inputEvent)
 {
     return false;
 }

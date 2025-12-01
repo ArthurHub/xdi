@@ -5,6 +5,6 @@ class VirtualMachine;
 
 namespace Papyrus
 {
-    bool RegisterPapyrus(VirtualMachine *vm);
+    bool RegisterPapyrus(VirtualMachine* vm);
     void RegisterFuncs(VirtualMachine* vm);
 }

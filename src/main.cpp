@@ -27,17 +27,15 @@
 IDebugLog gLog;
 PluginHandle g_pluginHandle = kPluginHandle_Invalid;
 
-F4SEScaleformInterface *g_scaleform = NULL;
-F4SEPapyrusInterface   *g_papyrus   = NULL;
-F4SEMessagingInterface *g_messaging = NULL;
-
-
+F4SEScaleformInterface* g_scaleform = NULL;
+F4SEPapyrusInterface* g_papyrus = NULL;
+F4SEMessagingInterface* g_messaging = NULL;
 
 // vr input
 
 _DialogueMenu__ShouldHandleEvent DialogueMenu__ShouldHandleEvent_original;
 
-void ProcessUserEvent(const char * controlName, bool isDown, int deviceType, UInt32 keyCode)
+void ProcessUserEvent(const char* controlName, bool isDown, int deviceType, UInt32 keyCode)
 {
     BSFixedString mainMenuStr("DialogueMenu");
     if ((*G::ui)->IsMenuOpen("DialogueMenu")) {
@@ -56,22 +54,25 @@ void ProcessUserEvent(const char * controlName, bool isDown, int deviceType, UIn
 class F4SEInputHandler : public BSInputEventUser
 {
 public:
-    F4SEInputHandler() : BSInputEventUser(true) { }
+    F4SEInputHandler()
+        : BSInputEventUser(true) {}
 
-    virtual void OnThumbstickEvent(ThumbstickEvent * inputEvent)
+    virtual void OnThumbstickEvent(ThumbstickEvent* inputEvent)
     {
-        if (inputEvent->stick == 0xC && inputEvent->previousDirection != inputEvent->direction)
-        {
+        if (inputEvent->stick == 0xC && inputEvent->previousDirection != inputEvent->direction) {
             _MESSAGE("OnThumbstickEvent move %i", inputEvent->direction);
-            switch (inputEvent->direction)
-            {
-            case 1: ProcessUserEvent(BSFixedString("Forward"), true, 0, 38);
+            switch (inputEvent->direction) {
+            case 1:
+                ProcessUserEvent(BSFixedString("Forward"), true, 0, 38);
                 break;
-            case 2: ProcessUserEvent(BSFixedString("StrafeRight"), true, 0, 39);
+            case 2:
+                ProcessUserEvent(BSFixedString("StrafeRight"), true, 0, 39);
                 break;
-            case 3: ProcessUserEvent(BSFixedString("Back"), true, 0, 40);
+            case 3:
+                ProcessUserEvent(BSFixedString("Back"), true, 0, 40);
                 break;
-            case 4: ProcessUserEvent(BSFixedString("StrafeLeft"), true, 0, 37);
+            case 4:
+                ProcessUserEvent(BSFixedString("StrafeLeft"), true, 0, 37);
                 break;
             default:
                 break;
@@ -79,11 +80,11 @@ public:
         }
     }
 
-    virtual void OnButtonEvent(ButtonEvent * inputEvent)
+    virtual void OnButtonEvent(ButtonEvent* inputEvent)
     {
-        UInt32	keyCode;
-        UInt32	deviceType = inputEvent->deviceType;
-        UInt32	keyMask = inputEvent->keyMask;
+        UInt32 keyCode;
+        UInt32 deviceType = inputEvent->deviceType;
+        UInt32 keyMask = inputEvent->keyMask;
 
         //_MESSAGE("OnButtonEvent");
         //_MESSAGE("deviceType %i, keymask %i", deviceType,  keyMask);
@@ -104,22 +105,23 @@ public:
         keyCode = keyMask;
 
         float timer = inputEvent->timer;
-        bool  isDown = inputEvent->isDown == 1.0f && timer == 0.0f;
-        bool  isUp = inputEvent->isDown == 0.0f && timer != 0.0f;
+        bool isDown = inputEvent->isDown == 1.0f && timer == 0.0f;
+        bool isUp = inputEvent->isDown == 0.0f && timer != 0.0f;
 
         BSFixedString* control = inputEvent->GetControlID();
 
         if (isDown) {
             ProcessUserEvent(control->c_str(), true, deviceType, keyCode);
-        }
-        else if (isUp) {
+        } else if (isUp) {
             ProcessUserEvent(control->c_str(), false, deviceType, keyCode);
         }
     }
 };
+
 F4SEInputHandler g_scaleformInputHandler;
 
-void RegisterForInput(bool bRegister) {
+void RegisterForInput(bool bRegister)
+{
     if (bRegister) {
         g_scaleformInputHandler.enabled = true;
         tArray<BSInputEventUser*>* inputEvents = &((*g_menuControls)->inputEvents);
@@ -129,8 +131,7 @@ void RegisterForInput(bool bRegister) {
             inputEvents->Push(&g_scaleformInputHandler);
             _MESSAGE("Registered for input events.");
         }
-    }
-    else {
+    } else {
         g_scaleformInputHandler.enabled = false;
     }
 }
@@ -141,15 +142,16 @@ void RegisterForInput(bool bRegister) {
 // Event Handlers
 //-------------------------
 
-void OnF4SEMessage(F4SEMessagingInterface::Message* msg) {
+void OnF4SEMessage(F4SEMessagingInterface::Message* msg)
+{
     switch (msg->type) {
-        case F4SEMessagingInterface::kMessage_GameDataReady:
-            G::OnDataLoaded();
-            break;
-        case F4SEMessagingInterface::kMessage_GameLoaded:
-            DialogueEx::OnGameLoaded();
-            RegisterForInput(true);
-            break;
+    case F4SEMessagingInterface::kMessage_GameDataReady:
+        G::OnDataLoaded();
+        break;
+    case F4SEMessagingInterface::kMessage_GameLoaded:
+        DialogueEx::OnGameLoaded();
+        RegisterForInput(true);
+        break;
     }
 }
 
@@ -159,8 +161,7 @@ void OnF4SEMessage(F4SEMessagingInterface::Message* msg) {
 
 extern "C"
 {
-
-bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
+bool F4SEPlugin_Query(const F4SEInterface* f4se, PluginInfo* info)
 {
     char logPath[MAX_PATH];
     sprintf_s(logPath, sizeof(logPath), "\\My Games\\Fallout4VR\\F4SE\\%s.log", PLUGIN_NAME_SHORT);
@@ -171,7 +172,7 @@ bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
 
     // populate info structure
     info->infoVersion = PluginInfo::kInfoVersion;
-    info->name    = PLUGIN_NAME_SHORT;
+    info->name = PLUGIN_NAME_SHORT;
     info->version = PLUGIN_VERSION;
 
     // store plugin handle so we can identify ourselves later
@@ -197,36 +198,36 @@ bool F4SEPlugin_Query(const F4SEInterface * f4se, PluginInfo * info)
 		return false;
 	}
     */
-    
+
     if (f4se->runtimeVersion > SUPPORTED_RUNTIME_VERSION) {
         _MESSAGE("INFO: Newer game version (%08X) than target (%08X).", f4se->runtimeVersion, SUPPORTED_RUNTIME_VERSION);
     }
 
     // Get the scaleform interface
-    g_scaleform = (F4SEScaleformInterface *)f4se->QueryInterface(kInterface_Scaleform);
+    g_scaleform = (F4SEScaleformInterface*)f4se->QueryInterface(kInterface_Scaleform);
     if (!g_scaleform) {
         _MESSAGE("couldn't get scaleform interface");
         return false;
     }
 
     // Get the papyrus interface
-    g_papyrus = (F4SEPapyrusInterface *)f4se->QueryInterface(kInterface_Papyrus);
+    g_papyrus = (F4SEPapyrusInterface*)f4se->QueryInterface(kInterface_Papyrus);
     if (!g_papyrus) {
         _MESSAGE("couldn't get papyrus interface");
         return false;
     }
 
     // Get the messaging interface
-    g_messaging = (F4SEMessagingInterface *)f4se->QueryInterface(kInterface_Messaging);
+    g_messaging = (F4SEMessagingInterface*)f4se->QueryInterface(kInterface_Messaging);
     if (!g_messaging) {
         _MESSAGE("couldn't get messaging interface");
         return false;
     }
 
-	return true;
+    return true;
 }
 
-bool F4SEPlugin_Load(const F4SEInterface *f4se)
+bool F4SEPlugin_Load(const F4SEInterface* f4se)
 {
     _MESSAGE("%s load", PLUGIN_NAME_SHORT);
 
@@ -258,8 +259,10 @@ bool F4SEPlugin_Load(const F4SEInterface *f4se)
     // VR input
 
     {
-        struct DialogueMenu__ShouldHandleEvent_Code : Xbyak::CodeGenerator {
-            DialogueMenu__ShouldHandleEvent_Code(void * buf) : Xbyak::CodeGenerator(4096, buf)
+        struct DialogueMenu__ShouldHandleEvent_Code : Xbyak::CodeGenerator
+        {
+            DialogueMenu__ShouldHandleEvent_Code(void* buf)
+                : Xbyak::CodeGenerator(4096, buf)
             {
                 Xbyak::Label retnLabel;
 
@@ -271,7 +274,7 @@ bool F4SEPlugin_Load(const F4SEInterface *f4se)
             }
         };
 
-        void * codeBuf = g_localTrampoline.StartAlloc();
+        void* codeBuf = g_localTrampoline.StartAlloc();
         DialogueMenu__ShouldHandleEvent_Code code(codeBuf);
         g_localTrampoline.EndAlloc(code.getCurr());
 
@@ -279,14 +282,13 @@ bool F4SEPlugin_Load(const F4SEInterface *f4se)
 
         g_branchTrampoline.Write5Branch(DialogueMenu__ShouldHandleEvent.GetUIntPtr(), (uintptr_t)DialogueMenu__ShouldHandleEvent_Hook);
     }
-    
+
     // ond of VR input
-    
-    #if DEBUG
-        //Debug::Init();
-    #endif
 
-	return true;
+#if DEBUG
+    //Debug::Init();
+#endif
+
+    return true;
 }
-
 };

@@ -14,7 +14,8 @@
 #include "DialogueEx.h"
 #include "GameUtils.h"
 
-namespace Scaleform {
+namespace Scaleform
+{
     using namespace DialogueEx;
 
     //---------------------
@@ -24,9 +25,11 @@ namespace Scaleform {
     // function IsFrameworkActive():Boolean;
     // Returns true if the player is currently making a dialogue selection and:
     // - The XDI keyword is on the scene.
-    class IsFrameworkActive : public GFxFunctionHandler {
+    class IsFrameworkActive : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             args->result->SetBool(false);
 
             if (DialogueEx::IsFrameworkActive())
@@ -39,19 +42,25 @@ namespace Scaleform {
     // Prompt contains short prompt text. Response contains full dialogue text.
     // Enabled reflects whether the dialogue option has passed condition checks.
     // Said reflects whether the dialogue option has already been said by the player.
-	class GetDialogueOptions : public GFxFunctionHandler {
-	public:
-		virtual void Invoke(Args* args) {
+    class GetDialogueOptions : public GFxFunctionHandler
+    {
+    public:
+        virtual void Invoke(Args* args)
+        {
             GetDialogueGFXValue(args->movie->movieRoot, args->result);
-		}
-	};
+        }
+    };
 
     // function SelectDialogueOption(option:int):Boolean;
-    class SelectDialogueOption : public GFxFunctionHandler {
+    class SelectDialogueOption : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_Int) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Int)
+                return;
             int option = args->args[0].GetInt();
 
             args->result->SetBool(DialogueEx::SelectDialogueOption(option));
@@ -60,9 +69,11 @@ namespace Scaleform {
 
     // function GetTargetName():String;
     // Returns the name of the target of the current player dialogue action.
-    class GetTargetName : public GFxFunctionHandler {
+    class GetTargetName : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             const char* result = "";
             if (TESObjectREFR* target = GetCurrentPlayerDialogueTarget()) {
                 result = GameUtils::GetReferenceName(target);
@@ -73,9 +84,11 @@ namespace Scaleform {
 
     // function GetTargetType():int;
     // Returns the form type of the target of the current player dialogue action.
-    class GetTargetType : public GFxFunctionHandler {
+    class GetTargetType : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             if (TESObjectREFR* target = GetCurrentPlayerDialogueTarget()) {
                 args->result->SetInt(target->formType);
             } else {
@@ -86,32 +99,36 @@ namespace Scaleform {
 
     // function GetINISetting(setting:String):*;
     // Returns the value of the given INI setting.
-    class GetINISetting : public GFxFunctionHandler {
+    class GetINISetting : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             args->result->SetNull();
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_String) return;
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_String)
+                return;
 
             Setting* setting = GameUtils::GetINISetting(args->args[0].GetString());
 
             if (setting) {
                 switch (setting->GetType()) {
-                    case Setting::kType_Integer:
-                        args->result->SetInt(setting->data.s32);
-                        break;
-                    case Setting::kType_Bool:
-                        args->result->SetBool(setting->data.u8 != 0);
-                        break;
-                    case Setting::kType_Float:
-                        args->result->SetNumber(setting->data.f32);
-                        break;
-                    case Setting::kType_String:
-                        args->result->SetString(setting->data.s);
-                        break;
-                    default:
-                        _MESSAGE("Warning: Unknown INI type %d.", setting->GetType());
-                        break;
+                case Setting::kType_Integer:
+                    args->result->SetInt(setting->data.s32);
+                    break;
+                case Setting::kType_Bool:
+                    args->result->SetBool(setting->data.u8 != 0);
+                    break;
+                case Setting::kType_Float:
+                    args->result->SetNumber(setting->data.f32);
+                    break;
+                case Setting::kType_String:
+                    args->result->SetString(setting->data.s);
+                    break;
+                default:
+                    _MESSAGE("Warning: Unknown INI type %d.", setting->GetType());
+                    break;
                 }
             }
         }
@@ -119,32 +136,37 @@ namespace Scaleform {
 
     // function GetModSetting(setting:String):*;
     // Returns the value of the given mod setting.
-    class GetModSetting : public GFxFunctionHandler {
+    class GetModSetting : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             args->result->SetNull();
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_String) return;
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_String)
+                return;
 
             const char* settingName = args->args[0].GetString();
-            if (strlen(settingName) == 0) return;
+            if (strlen(settingName) == 0)
+                return;
 
             switch (tolower(settingName[0])) {
-                case 'i':
-                    args->result->SetInt(Settings::GetInt(settingName));
-                    break;
-                case 'b':
-                    args->result->SetBool(Settings::GetBool(settingName));
-                    break;
-                case 'f':
-                    args->result->SetNumber(Settings::GetFloat(settingName));
-                    break;
-                case 's':
-                    args->result->SetString(Settings::GetString(settingName).c_str());
-                    break;
-                default:
-                    _MESSAGE("WARNING: Cannot retrieve setting %s with invalid type.", settingName);
-                    break;
+            case 'i':
+                args->result->SetInt(Settings::GetInt(settingName));
+                break;
+            case 'b':
+                args->result->SetBool(Settings::GetBool(settingName));
+                break;
+            case 'f':
+                args->result->SetNumber(Settings::GetFloat(settingName));
+                break;
+            case 's':
+                args->result->SetString(Settings::GetString(settingName).c_str());
+                break;
+            default:
+                _MESSAGE("WARNING: Cannot retrieve setting %s with invalid type.", settingName);
+                break;
             }
         }
     };
@@ -152,9 +174,11 @@ namespace Scaleform {
     // function GetSubtitlePosition():Array;
     // Returns: [xPos:Number, yPos:Number]
     // Returns null if the HUDMenu is not open.
-    class GetSubtitlePosition_GFX : public GFxFunctionHandler {
+    class GetSubtitlePosition_GFX : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             args->result->SetNull();
 
             BSFixedString menuStr("HUDMenu");
@@ -164,8 +188,10 @@ namespace Scaleform {
 
                 movieRoot->CreateArray(args->result);
 
-                GFxValue subtitleX; movieRoot->GetVariable(&subtitleX, "root.BottomCenterGroup_mc.SubtitleText_mc.x");
-                GFxValue subtitleY; movieRoot->GetVariable(&subtitleY, "root.BottomCenterGroup_mc.SubtitleText_mc.y");
+                GFxValue subtitleX;
+                movieRoot->GetVariable(&subtitleX, "root.BottomCenterGroup_mc.SubtitleText_mc.x");
+                GFxValue subtitleY;
+                movieRoot->GetVariable(&subtitleY, "root.BottomCenterGroup_mc.SubtitleText_mc.y");
 
                 args->result->PushBack(&subtitleX);
                 args->result->PushBack(&subtitleY);
@@ -175,21 +201,27 @@ namespace Scaleform {
 
     // function SetSubtitlePosition(xPos:Number, yPos:Number):Boolean;
     // Returns true if the HUDMenu is open and the subtitle position was set. False otherwise.
-    class SetSubtitlePosition_GFX : public GFxFunctionHandler {
+    class SetSubtitlePosition_GFX : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
+        virtual void Invoke(Args* args)
+        {
             args->result->SetBool(false);
 
-            if (args->numArgs < 2) return;
-            if (args->args[0].GetType() != GFxValue::kType_Number) return;
-            if (args->args[1].GetType() != GFxValue::kType_Number) return;
+            if (args->numArgs < 2)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Number)
+                return;
+            if (args->args[1].GetType() != GFxValue::kType_Number)
+                return;
 
             BSFixedString menuStr("HUDMenu");
             if ((*G::ui)->IsMenuOpen(menuStr)) {
                 IMenu* menu = (*G::ui)->GetMenu(menuStr);
                 GFxMovieRoot* movieRoot = menu->movie->movieRoot;
 
-                GFxValue subtitle; movieRoot->GetVariable(&subtitle, "root.BottomCenterGroup_mc.SubtitleText_mc");
+                GFxValue subtitle;
+                movieRoot->GetVariable(&subtitle, "root.BottomCenterGroup_mc.SubtitleText_mc");
                 subtitle.SetMember("x", &args->args[0]);
                 subtitle.SetMember("y", &args->args[1]);
 
@@ -199,11 +231,15 @@ namespace Scaleform {
     };
 
     // function SetWheelZoomEnabled(enabled:Boolean);
-    class SetWheelZoomEnabled : public GFxFunctionHandler {
+    class SetWheelZoomEnabled : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_Bool) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Bool)
+                return;
 
             bool enabled = args->args[0].GetBool();
             DialogueEx::SetWheelZoomEnabled(enabled);
@@ -211,11 +247,15 @@ namespace Scaleform {
     };
 
     // function SetFavoritesEnabled(enabled:Boolean);
-    class SetFavoritesEnabled : public GFxFunctionHandler {
+    class SetFavoritesEnabled : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_Bool) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Bool)
+                return;
 
             bool enabled = args->args[0].GetBool();
             DialogueEx::SetFavoritesEnabled(enabled);
@@ -223,11 +263,15 @@ namespace Scaleform {
     };
 
     // function SetMovementEnabled(enabled:Boolean);
-    class SetMovementEnabled : public GFxFunctionHandler {
+    class SetMovementEnabled : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_Bool) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Bool)
+                return;
 
             bool enabled = args->args[0].GetBool();
             DialogueEx::SetMovementEnabled(enabled);
@@ -235,27 +279,37 @@ namespace Scaleform {
     };
 
     // function SetPlayerControls(type:int, flags:int, enabled:Boolean);
-    class SetPlayerControls : public GFxFunctionHandler {
+    class SetPlayerControls : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 3) return;
-            if (args->args[0].GetType() != GFxValue::kType_Int) return;
-            if (args->args[1].GetType() != GFxValue::kType_Int) return;
-            if (args->args[2].GetType() != GFxValue::kType_Bool) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 3)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Int)
+                return;
+            if (args->args[1].GetType() != GFxValue::kType_Int)
+                return;
+            if (args->args[2].GetType() != GFxValue::kType_Bool)
+                return;
 
-            int type        = args->args[0].GetInt();
-            int flags       = args->args[1].GetInt();
-            bool enabled    = args->args[2].GetBool();
+            int type = args->args[0].GetInt();
+            int flags = args->args[1].GetInt();
+            bool enabled = args->args[2].GetBool();
             DialogueEx::SetInputEnableFlags(type, flags, enabled);
         }
     };
 
     // function SetXDIResult(value:Number);
-    class SetXDIResult : public GFxFunctionHandler {
+    class SetXDIResult : public GFxFunctionHandler
+    {
     public:
-        virtual void Invoke(Args* args) {
-            if (args->numArgs < 1) return;
-            if (args->args[0].GetType() != GFxValue::kType_Number) return;
+        virtual void Invoke(Args* args)
+        {
+            if (args->numArgs < 1)
+                return;
+            if (args->args[0].GetType() != GFxValue::kType_Number)
+                return;
 
             float value = args->args[0].GetNumber();
             DialogueEx::SetXDIResult(value);
@@ -266,7 +320,8 @@ namespace Scaleform {
     // General Functions
     //-------------------
 
-    std::pair<float, float> GetSubtitlePosition() {
+    std::pair<float, float> GetSubtitlePosition()
+    {
         std::pair<float, float> pos;
 
         BSFixedString menuStr("HUDMenu");
@@ -274,8 +329,10 @@ namespace Scaleform {
             IMenu* menu = (*G::ui)->GetMenu(menuStr);
             GFxMovieRoot* movieRoot = menu->movie->movieRoot;
 
-            GFxValue subtitleX; movieRoot->GetVariable(&subtitleX, "root.BottomCenterGroup_mc.SubtitleText_mc.x");
-            GFxValue subtitleY; movieRoot->GetVariable(&subtitleY, "root.BottomCenterGroup_mc.SubtitleText_mc.y");
+            GFxValue subtitleX;
+            movieRoot->GetVariable(&subtitleX, "root.BottomCenterGroup_mc.SubtitleText_mc.x");
+            GFxValue subtitleY;
+            movieRoot->GetVariable(&subtitleY, "root.BottomCenterGroup_mc.SubtitleText_mc.y");
 
             pos.first = subtitleX.GetNumber();
             pos.second = subtitleY.GetNumber();
@@ -286,13 +343,15 @@ namespace Scaleform {
         return pos;
     }
 
-    bool SetSubtitlePosition(float x, float y) {
+    bool SetSubtitlePosition(float x, float y)
+    {
         BSFixedString menuStr("HUDMenu");
         if ((*G::ui)->IsMenuOpen(menuStr)) {
             IMenu* menu = (*G::ui)->GetMenu(menuStr);
             GFxMovieRoot* movieRoot = menu->movie->movieRoot;
 
-            GFxValue subtitle; movieRoot->GetVariable(&subtitle, "root.BottomCenterGroup_mc.SubtitleText_mc");
+            GFxValue subtitle;
+            movieRoot->GetVariable(&subtitle, "root.BottomCenterGroup_mc.SubtitleText_mc");
             subtitle.SetMember("x", &GFxValue(x));
             subtitle.SetMember("y", &GFxValue(y));
             return true;
@@ -301,15 +360,18 @@ namespace Scaleform {
     }
 }
 
-namespace Scaleform {
-    void RegisterFuncs_MultiActivateMenu(GFxValue* codeObj, GFxMovieRoot* movieRoot) {
+namespace Scaleform
+{
+    void RegisterFuncs_MultiActivateMenu(GFxValue* codeObj, GFxMovieRoot* movieRoot)
+    {
         RegisterFunction<GetINISetting>(codeObj, movieRoot, "GetINISetting");
         RegisterFunction<GetModSetting>(codeObj, movieRoot, "GetModSetting");
         RegisterFunction<GetSubtitlePosition_GFX>(codeObj, movieRoot, "GetSubtitlePosition");
         RegisterFunction<SetSubtitlePosition_GFX>(codeObj, movieRoot, "SetSubtitlePosition");
     }
 
-    void RegisterFuncs_DialogueMenu(GFxValue* codeObj, GFxMovieRoot* movieRoot) {
+    void RegisterFuncs_DialogueMenu(GFxValue* codeObj, GFxMovieRoot* movieRoot)
+    {
         RegisterFunction<IsFrameworkActive>(codeObj, movieRoot, "IsFrameworkActive");
         RegisterFunction<GetDialogueOptions>(codeObj, movieRoot, "GetDialogueOptions");
         RegisterFunction<SelectDialogueOption>(codeObj, movieRoot, "SelectDialogueOption");
@@ -331,7 +393,7 @@ namespace Scaleform {
     }
 }
 
-bool Scaleform::RegisterScaleform(GFxMovieView * view, GFxValue * f4se_root)
+bool Scaleform::RegisterScaleform(GFxMovieView* view, GFxValue* f4se_root)
 {
     GFxMovieRoot* movieRoot = view->movieRoot;
 
@@ -351,7 +413,6 @@ bool Scaleform::RegisterScaleform(GFxMovieView * view, GFxValue * f4se_root)
         RegisterFuncs_DialogueMenu(&codeObj, movieRoot);
 
         movieRoot->Invoke("root.XDI_Init", nullptr, nullptr, 0);
-
     } else if (strcmp(currentSWFPathString, "Interface/MultiActivateMenu.swf") == 0) {
         GFxValue codeObj;
         movieRoot->GetVariable(&codeObj, "root.Menu_mc.BGSCodeObj");
@@ -364,8 +425,10 @@ bool Scaleform::RegisterScaleform(GFxMovieView * view, GFxValue * f4se_root)
 //--------------------------
 // Internal functions
 //--------------------------
-namespace {
-    void GetDialogueGFXValue(GFxMovieRoot* movieRoot, GFxValue* outValue) {
+namespace
+{
+    void GetDialogueGFXValue(GFxMovieRoot* movieRoot, GFxValue* outValue)
+    {
         using namespace DialogueEx;
 
         movieRoot->CreateArray(outValue);

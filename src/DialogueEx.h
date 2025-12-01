@@ -10,18 +10,19 @@ namespace DialogueEx
     //-------------------------
     // Data Structures
     //-------------------------
-    struct DialogueOption {
+    struct DialogueOption
+    {
         int optionID;
         TESTopicInfo* info;
         const char* promptText;
         std::string responseText;
         bool enabled;
         bool said;
-        int challengeLevel;     //  0: No speech challenge
-        int challengeResult;    // -1: Not attempted, 0: Failed, 1: Succeeded. For repeatable challenges, always -1.
-        bool linkedToSelf;      // Whether or not this dialogue option links to itself.
-        bool endsScene;         // Whether or not this dialogue option will end the scene.
-        bool isBarterOption;    // Whether or not this dialogue option has the VendorInfoScript attached.
+        int challengeLevel; //  0: No speech challenge
+        int challengeResult; // -1: Not attempted, 0: Failed, 1: Succeeded. For repeatable challenges, always -1.
+        bool linkedToSelf; // Whether or not this dialogue option links to itself.
+        bool endsScene; // Whether or not this dialogue option will end the scene.
+        bool isBarterOption; // Whether or not this dialogue option has the VendorInfoScript attached.
         bool isInventoryOption; // Whether or not this dialogue option has the OpenInventoryInfoScript attached.
     };
 
@@ -35,7 +36,7 @@ namespace DialogueEx
     // Status
     //-------------------------
     bool IsFrameworkActive();
-    extern bool g_frameworkActiveOverride;  // for debug only. defaults to false.
+    extern bool g_frameworkActiveOverride; // for debug only. defaults to false.
 
     //-------------------------
     // Scene Control
@@ -95,7 +96,8 @@ namespace DialogueEx
 //-------------------------
 // Internal
 //-------------------------
-namespace {
+namespace
+{
     struct DialogueHolder
     {
         BGSScene* scene;
@@ -104,19 +106,19 @@ namespace {
         // Vector of pair of (Player topic info + vector of NPC response topic infos).
         std::vector<std::pair<TESTopicInfo*, std::vector<TESTopicInfo*>>> dialogueMap;
     };
+
     extern DialogueHolder g_dialogueHolder;
 
     // Event Sinks
     class MenuOpenCloseHandler : public BSTEventSink<MenuOpenCloseEventEx>
     {
     public:
-        virtual	EventResult	ReceiveEvent(MenuOpenCloseEventEx * evn, void * dispatcher) override;
+        virtual EventResult ReceiveEvent(MenuOpenCloseEventEx* evn, void* dispatcher) override;
         static void Register();
     };
 }
 
 // vr input
 
-
-extern RVA<_DialogueMenu__ShouldHandleEvent>          DialogueMenu__ShouldHandleEvent;
-bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent * inputEvent);
+extern RVA<_DialogueMenu__ShouldHandleEvent> DialogueMenu__ShouldHandleEvent;
+bool DialogueMenu__ShouldHandleEvent_Hook(InputEvent* inputEvent);
