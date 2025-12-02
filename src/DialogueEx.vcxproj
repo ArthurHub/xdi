@@ -116,7 +116,7 @@ copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - FOLON\mods\XDI VR - D
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;F4SE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\..;C:\Stuff\github\f4sevr\src\f4sevr;C:\Stuff\github\f4sevr\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)\..;$(SolutionDir)\..\..\f4sevr\src\;$(SolutionDir)\..\..\f4sevr\src\f4sevr;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>common/IPrefix.h</ForcedIncludeFiles>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -126,11 +126,11 @@ copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - FOLON\mods\XDI VR - D
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)/../libs/release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\libs\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>common_vc14.lib;f4se_common.lib;f4sevr_1_2_72.lib;f4se_loader_common.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "F:\Fallout 4 VR\Data\F4SE\Plugins\$(TargetFileName)"</Command>
+      <Command>copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - Mad God Overhaul\mods\XDI - DEV\F4SE\Plugins\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Installing DLL...</Message>
