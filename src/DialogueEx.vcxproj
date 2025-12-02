@@ -100,7 +100,8 @@
       <AdditionalDependencies>common_vc14.lib;f4se_common.lib;f4sevr_1_2_72.lib;f4se_loader_common.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - Mad God Overhaul\mods\XDI - DEV\F4SE\Plugins\$(TargetFileName)"</Command>
+      <Command>copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - Mad God Overhaul\mods\XDI - DEV\F4SE\Plugins\$(TargetFileName)"
+copy /b /y "$(TargetPath)" "C:\Stuff\Fallout Modding\MO2 - FOLON\mods\XDI VR - DEV\F4SE\Plugins\$(TargetFileName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Installing DLL...</Message>
