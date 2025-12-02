@@ -189,6 +189,10 @@ namespace DialogueEx
         return nullptr;
     }
 
+    /**
+     * Select extended dialog option.
+     * Only called for extended dialog and NOT vanilla F4 dialogs.
+     */
     bool SelectDialogueOption(int option)
     {
         if (!(*g_menuTopicManager)->awaitingPlayerInput)

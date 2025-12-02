@@ -60,7 +60,7 @@ public:
     virtual void OnThumbstickEvent(ThumbstickEvent* inputEvent)
     {
         if (inputEvent->stick == 0xC && inputEvent->previousDirection != inputEvent->direction) {
-            _MESSAGE("OnThumbstickEvent move %i", inputEvent->direction);
+            // _MESSAGE("OnThumbstickEvent move %i", inputEvent->direction);
             switch (inputEvent->direction) {
             case 1:
                 ProcessUserEvent(BSFixedString("Forward"), true, 0, 38);
@@ -113,7 +113,9 @@ public:
         if (isDown) {
             ProcessUserEvent(control->c_str(), true, deviceType, keyCode);
         } else if (isUp) {
-            ProcessUserEvent(control->c_str(), false, deviceType, keyCode);
+            // Sending up event causes dialog skip in VR because the swf file does it specifically for trigger, don't know why it was done so
+            // _MESSAGE("OnButtonEvent Up '%s': %i, %i, %i, %f", control->c_str(), deviceType, keyMask, inputEvent->isDown, inputEvent->timer);
+            // ProcessUserEvent(control->c_str(), false, deviceType, keyCode);
         }
     }
 };
