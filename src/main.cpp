@@ -1,4 +1,6 @@
 #include <shlobj.h>
+#include <thread>
+#include <f4se/GameSettings.h>
 #include <xbyak/xbyak.h>
 
 #include "f4se/PluginAPI.h"
@@ -91,6 +93,56 @@ bool IsDialogWaitingForPlayerInput()
     return false;
 }
 
+double s_originalAIInDialogueModeWithPlayerDistance = -1;
+bool s_isSetAIInDialogueModeWithPlayerDistance = false;
+
+void resetExitCurrentDialogGameSetting()
+{
+    if (s_isSetAIInDialogueModeWithPlayerDistance && s_originalAIInDialogueModeWithPlayerDistance > 0) {
+        _MESSAGE("Resting dialog distance to original value = %f", s_originalAIInDialogueModeWithPlayerDistance);
+        const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
+        if (setting) {
+            s_isSetAIInDialogueModeWithPlayerDistance = false;
+            setting->SetDouble(s_originalAIInDialogueModeWithPlayerDistance);
+        } else {
+            _WARNING("Failed to find fAIInDialogueModeWithPlayerDistance");
+        }
+    }
+}
+
+/**
+ * Changed the distance at which the dialog is closed to a low value so the dialog will be closed imminently.
+ * After 400ms restore the original value so the dialog can be opened again.
+ */
+void exitCurrentDialogByGameSettingChange()
+{
+    // init original value first time
+    if (s_originalAIInDialogueModeWithPlayerDistance < 1) {
+        const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
+        if (setting) {
+            s_originalAIInDialogueModeWithPlayerDistance = setting->data.f32;
+        }
+    }
+
+    // do nothing if not in dialog, no original value found, or already did exit
+    if (s_isSetAIInDialogueModeWithPlayerDistance || s_originalAIInDialogueModeWithPlayerDistance < 1 || !(*G::ui)->IsMenuOpen("DialogueMenu")) {
+        return;
+    }
+
+    _MESSAGE("Exit dialog by adjusting dialogue distance");
+    const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
+    if (setting) {
+        s_isSetAIInDialogueModeWithPlayerDistance = true;
+        setting->SetDouble(20);
+        std::thread([] {
+            std::this_thread::sleep_for(std::chrono::milliseconds(400));
+            resetExitCurrentDialogGameSetting();
+        }).detach();
+    } else {
+        _WARNING("Failed to find fAIInDialogueModeWithPlayerDistance");
+    }
+}
+
 class F4SEInputHandler : public BSInputEventUser
 {
 public:
@@ -151,7 +203,10 @@ public:
         BSFixedString* control = inputEvent->GetControlID();
 
         if (isDown) {
-            if (strcmp(control->c_str(), "WandTrigger") == 0 && !IsDialogWaitingForPlayerInput()) {
+            if (strcmp(control->c_str(), "WandGrip") == 0 || (deviceType == 4 && keyMask == 34)) {
+                // grip used to exit dialog
+                exitCurrentDialogByGameSettingChange();
+            } else if (strcmp(control->c_str(), "WandTrigger") == 0 && !IsDialogWaitingForPlayerInput()) {
                 // trigger used to skip dialog while someone is talking
                 ProcessSkipDialog();
             } else {
