@@ -19,6 +19,7 @@
 #include "Scaleform.h"
 #include "Papyrus.h"
 #include "DialogueEx.h"
+#include "Utils.h"
 #include "f4se/GameMenus.h"
 
 #define DEBUG _DEBUG
@@ -36,6 +37,29 @@ F4SEMessagingInterface* g_messaging = NULL;
 // vr input
 
 _DialogueMenu__ShouldHandleEvent DialogueMenu__ShouldHandleEvent_original;
+
+// vr exit dialog hack
+using _BGSScene__GetMaxDialogueDistanceRaw = float(__fastcall*)(BGSScene*);
+RVA<_BGSScene__GetMaxDialogueDistanceRaw>
+BGSScene__GetMaxDialogueDistanceRaw({{RUNTIME_VERSION_1_10_75, 0x02AF6E0}}, "40 53 48 83 EC 20 48 8B D9 48 8B D1 48 8D 4C 24 30 45 33 C0 E8 B7 3A 8E");
+_BGSScene__GetMaxDialogueDistanceRaw BGSScene__GetMaxDialogueDistanceRaw_original;
+uint64_t s_exitDialogReuqetStartTimeMillis = 0;
+
+/**
+ * To exit a dialog we hook into "GetMaxDialogueDistanceRaw" function and return a low distance value that is
+ * causing the game to exit the dialog.
+ * It is base on "fAIInDialogueModeWithPlayerDistance" game option but just changing it doesn't close all dialogs
+ * because some override the distance in specific dialog scenes. The hook allows exiting any dialog.
+ * Use small time window to make sure the game catches it before reverting to original flow.
+ */
+float OnBGSScene_GetMaxDialogueDistanceRaw_Hook(BGSScene* scene)
+{
+    if (s_exitDialogReuqetStartTimeMillis > 0 && Utils::nowMillis() - s_exitDialogReuqetStartTimeMillis < 400) {
+        return 25;
+    }
+    s_exitDialogReuqetStartTimeMillis = 0;
+    return BGSScene__GetMaxDialogueDistanceRaw_original(scene);
+}
 
 void ProcessUserEvent(const char* controlName, bool isDown, int deviceType, UInt32 keyCode)
 {
@@ -57,7 +81,7 @@ void ProcessUserEvent(const char* controlName, bool isDown, int deviceType, UInt
  * Trigger neutral F4 response dialog that will result in skipping player or NPC talking if
  * the dialog options are not shown yet.
  */
-void ProcessSkipDialog()
+void ProcessSkipDialogLine()
 {
     if (!(*G::ui)->IsMenuOpen("DialogueMenu")) {
         return;
@@ -91,56 +115,6 @@ bool IsDialogWaitingForPlayerInput()
     }
     _WARNING("Calling GetVariable(root.List_mc.alpha) failed");
     return false;
-}
-
-double s_originalAIInDialogueModeWithPlayerDistance = -1;
-bool s_isSetAIInDialogueModeWithPlayerDistance = false;
-
-void resetExitCurrentDialogGameSetting()
-{
-    if (s_isSetAIInDialogueModeWithPlayerDistance && s_originalAIInDialogueModeWithPlayerDistance > 0) {
-        _MESSAGE("Resting dialog distance to original value = %f", s_originalAIInDialogueModeWithPlayerDistance);
-        const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
-        if (setting) {
-            s_isSetAIInDialogueModeWithPlayerDistance = false;
-            setting->SetDouble(s_originalAIInDialogueModeWithPlayerDistance);
-        } else {
-            _WARNING("Failed to find fAIInDialogueModeWithPlayerDistance");
-        }
-    }
-}
-
-/**
- * Changed the distance at which the dialog is closed to a low value so the dialog will be closed imminently.
- * After 400ms restore the original value so the dialog can be opened again.
- */
-void exitCurrentDialogByGameSettingChange()
-{
-    // init original value first time
-    if (s_originalAIInDialogueModeWithPlayerDistance < 1) {
-        const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
-        if (setting) {
-            s_originalAIInDialogueModeWithPlayerDistance = setting->data.f32;
-        }
-    }
-
-    // do nothing if not in dialog, no original value found, or already did exit
-    if (s_isSetAIInDialogueModeWithPlayerDistance || s_originalAIInDialogueModeWithPlayerDistance < 1 || !(*G::ui)->IsMenuOpen("DialogueMenu")) {
-        return;
-    }
-
-    _MESSAGE("Exit dialog by adjusting dialogue distance");
-    const auto setting = GetGameSetting("fAIInDialogueModeWithPlayerDistance");
-    if (setting) {
-        s_isSetAIInDialogueModeWithPlayerDistance = true;
-        setting->SetDouble(20);
-        std::thread([] {
-            std::this_thread::sleep_for(std::chrono::milliseconds(400));
-            resetExitCurrentDialogGameSetting();
-        }).detach();
-    } else {
-        _WARNING("Failed to find fAIInDialogueModeWithPlayerDistance");
-    }
 }
 
 class F4SEInputHandler : public BSInputEventUser
@@ -205,10 +179,12 @@ public:
         if (isDown) {
             if (strcmp(control->c_str(), "WandGrip") == 0 || (deviceType == 4 && keyMask == 34)) {
                 // grip used to exit dialog
-                exitCurrentDialogByGameSettingChange();
+                _MESSAGE("Exit dialog by grip");
+                s_exitDialogReuqetStartTimeMillis = Utils::nowMillis();
             } else if (strcmp(control->c_str(), "WandTrigger") == 0 && !IsDialogWaitingForPlayerInput()) {
                 // trigger used to skip dialog while someone is talking
-                ProcessSkipDialog();
+                _MESSAGE("Skip dialog line by trigger");
+                ProcessSkipDialogLine();
             } else {
                 // _MESSAGE("OnButtonEvent Down '%s': %i, %i, %i, %f", control->c_str(), deviceType, keyMask, inputEvent->isDown, inputEvent->timer);
                 ProcessUserEvent(control->c_str(), true, deviceType, keyCode);
@@ -386,7 +362,38 @@ bool F4SEPlugin_Load(const F4SEInterface* f4se)
         g_branchTrampoline.Write5Branch(DialogueMenu__ShouldHandleEvent.GetUIntPtr(), (uintptr_t)DialogueMenu__ShouldHandleEvent_Hook);
     }
 
-    // ond of VR input
+    // VR max dialog distance hook to exit dialog
+    {
+        struct BGSScene__GetMaxDialogueDistance_Code : Xbyak::CodeGenerator
+        {
+            BGSScene__GetMaxDialogueDistance_Code(void* buf)
+                : CodeGenerator(1024, buf)
+            {
+                Xbyak::Label retnLabel;
+
+                // Stolen bytes from 1402AF6E0:
+                // push rbx
+                push(rbx);
+
+                // sub rsp, 20h
+                sub(rsp, 0x20);
+
+                // Jump back to original at 1402AF6E6 (after sub)
+                jmp(ptr[rip + retnLabel]);
+
+                L(retnLabel);
+                dq(BGSScene__GetMaxDialogueDistanceRaw.GetUIntPtr() + 0x6);
+            }
+        };
+
+        void* codeBuf = g_localTrampoline.StartAlloc();
+        BGSScene__GetMaxDialogueDistance_Code code(codeBuf);
+        g_localTrampoline.EndAlloc(code.getCurr());
+        BGSScene__GetMaxDialogueDistanceRaw_original = (_BGSScene__GetMaxDialogueDistanceRaw)codeBuf;
+        g_branchTrampoline.Write5Branch(BGSScene__GetMaxDialogueDistanceRaw.GetUIntPtr(), (uintptr_t)OnBGSScene_GetMaxDialogueDistanceRaw_Hook);
+    }
+
+    // end of max dialog distance
 
 #if DEBUG
     //Debug::Init();
